@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using YTTracky.Api.Services.UserService;
 
@@ -9,18 +10,21 @@ namespace YTTracky.Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-
         public UserController(IUserService userService)
         {
-            _userService = userService;
+            _userService= userService;  
         }
 
+        [Authorize]
         [HttpGet]
-        public async Task<ActionResult<List<User>>> GetAllUsers()
+        public async Task<ActionResult> GetUserAsync()
         {
-            var users = await _userService.GetUsersAsync();
-            return users;
+            var userCliam = await _userService.GetCurrentUser(HttpContext);
+          if (userCliam == null)
+            {
+                return NotFound();
+            }
+          return Ok(userCliam);
         }
-
     }
 }

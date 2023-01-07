@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using YTTracky.Api.Dtos;
 
 namespace YTTracky.Api.Services.UserService
 {
@@ -9,10 +11,26 @@ namespace YTTracky.Api.Services.UserService
         {
             _context = context;
         }
-        public async Task<List<User>> GetUsersAsync()
+        public async Task<User?> AuthUserAsync(UserDto inputDto)
         {
-            var users = await _context.Users.ToListAsync();
-            return users;
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == inputDto.Username && x.Password == inputDto.Password);
+            return user;
+        }
+
+        public async Task<UserDto?> GetCurrentUser(HttpContext context)
+        {
+            var identity = context.User.Identity as ClaimsIdentity;
+
+            if (identity != null)
+            {
+                var userClaims = identity.Claims;
+
+                return new UserDto
+                {
+                    Username = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value
+                };
+            }
+            return null;
         }
     }
 }

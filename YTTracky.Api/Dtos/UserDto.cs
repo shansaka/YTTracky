@@ -2,7 +2,7 @@
 
 namespace YTTracky.Api.Dtos
 {
-    public class LoginDto
+    public class UserDto
     {
         [Required(ErrorMessage = "User Name is required")]
         public string? Username { get; set; }

@@ -1,7 +1,10 @@
-﻿namespace YTTracky.Api.Services.UserService
+﻿using YTTracky.Api.Dtos;
+
+namespace YTTracky.Api.Services.UserService
 {
     public interface IUserService
     {
-        Task<List<User>> GetUsersAsync();
+        Task<User?> AuthUserAsync(UserDto inputDto);
+        Task<UserDto?> GetCurrentUser(HttpContext context);
     }
 }
