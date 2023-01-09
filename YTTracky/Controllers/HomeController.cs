@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 using YTTracky.Models;
 
 namespace YTTracky.Controllers
@@ -15,6 +16,11 @@ namespace YTTracky.Controllers
 
         public IActionResult Index()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Redirect("/Account/Login");
+            }
+
             return View();
         }
 
